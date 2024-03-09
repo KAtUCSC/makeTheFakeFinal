@@ -19,6 +19,18 @@ class Play extends Phaser.Scene {
     //make things
     create() {
         //can recieve data
+        //tilemap setup
+        const map = this.add.tilemap('tilemapJSON1')
+        //ground is the tileset's name in tiled
+        const tileset = map.addTilesetImage('ground', 'assetImage')
+        //foreground is the name of the layer in tiled
+        const groundLayer = map.createLayer('foreground', 'ground', 0, 0).setScale(4)
+
+        //create bike and player
+        
+        //set camera bounds
+        this.cameras.main.setBounds(0, 0, map.widthInPixels, map.heightInPixels)
+        //this.cameras.main.startFollow()
     }
 
     //do constantly

@@ -1,0 +1,35 @@
+{
+    "Map/SizeTest": {
+        "height": 4300,
+        "width": 2
+    },
+    "activeFile": "",
+    "expandedProjectPaths": [
+    ],
+    "file.lastUsedOpenFilter": "All Files (*)",
+    "fileStates": {
+        "#assets": {
+            "scaleInDock": 2.0858
+        }
+    },
+    "last.exportedFilePath": "C:/Users/kirae/Downloads/School/Quarter 2/CMPM 120/phaser3/makeTheFakeFinal/assets/tiled",
+    "last.imagePath": "C:/Users/kirae/Downloads/School/Quarter 2/CMPM 120/phaser3/makeTheFakeFinal/assets",
+    "map.fixedSize": true,
+    "map.lastUsedExportFilter": "JSON map files (*.tmj *.json)",
+    "map.lastUsedFormat": "tmx",
+    "map.tileHeight": 8,
+    "map.tileWidth": 8,
+    "map.width": 100,
+    "openFiles": [
+    ],
+    "project": "ground.tiled-project",
+    "recentFiles": [
+    ],
+    "tileset.embedInMap": true,
+    "tileset.tileSize": {
+        "height": 8,
+        "width": 8
+    },
+    "tileset.transparentColor": "#000000",
+    "tileset.useTransparentColor": true
+}

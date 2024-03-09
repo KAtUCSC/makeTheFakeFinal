@@ -10,8 +10,14 @@ let config = {
         pixelArt:true,
     },
     physics:{
+        default: "matter",
+        matter: {
+            debug: true
+        }
     },
     scene: [Load, Title, Play, Score]
 }
 
 let game = new Phaser.Game(config);
+
+let keyA, keyD, keyJ, keyK
