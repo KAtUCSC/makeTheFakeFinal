@@ -19,7 +19,8 @@ class Title extends Phaser.Scene {
     //make things
     create() {
         //can recieve data
-        this.add.bitmapText(0, 0, 'pixelU', 'WOW A TITLE damn')
+        let titleText = this.add.bitmapText(0, 0, 'pixelU', 'Title text. Placeholder. BROKEN BONEZ', 16)
+        console.log(titleText)
     }
 
     //do constantly

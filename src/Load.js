@@ -35,23 +35,25 @@ class Load extends Phaser.Scene {
     //make things
     create() {
         //can recieve data
+        //loading scene text
         this.add.bitmapText(4, game.config.height*2/5, 'pixelU', 'This is my load scene.', 32)
+        //start the title scene in a bit
         this.titleTimer = this.time.delayedCall(5000, () => {
             this.scene.start('titleScene')
         })
+        //countdown timer text for the title scene start
         this.titleTimerText = this.add.bitmapText(4, game.config.height/2, 'pixelU', '0000', 32)
-        console.log(this.titleTimerText)
-        console.log(this.titleTimer)
     }
 
     //do constantly
     update() {
         //automatically fed time and delta
-        let breakMe = ((5000 - this.titleTimer.elapsed)/100).toString().split(".")[0]
-        while(breakMe.length < 4) {
-            breakMe = "0" + breakMe
+        //system for updating the countdown timer text below the loading bar
+        let timeLeft = ((5000 - this.titleTimer.elapsed)/100).toString().split(".")[0]
+        while(timeLeft.length < 4) {
+            timeLeft = "0" + timeLeft
         }
-        this.titleTimerText.text = breakMe
+        this.titleTimerText.text = timeLeft
     }
 
     
