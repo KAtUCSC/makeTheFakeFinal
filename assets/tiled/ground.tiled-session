@@ -3,13 +3,29 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "",
+    "activeFile": "terrain.tmx",
     "expandedProjectPaths": [
+        "."
     ],
     "file.lastUsedOpenFilter": "All Files (*)",
     "fileStates": {
+        "": {
+            "scaleInEditor": 1
+        },
         "#assets": {
             "scaleInDock": 2.0858
+        },
+        "terrain.tmx": {
+            "scale": 3.4705,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 78.2308024780291,
+                "y": 81.8325889641262
+            }
+        },
+        "terrain.tmx#ground": {
+            "scaleInDock": 3.2568,
+            "scaleInEditor": 1
         }
     },
     "last.exportedFilePath": "C:/Users/kirae/Downloads/School/Quarter 2/CMPM 120/phaser3/makeTheFakeFinal/assets/tiled",
@@ -21,9 +37,12 @@
     "map.tileWidth": 8,
     "map.width": 100,
     "openFiles": [
+        "terrain.tmx"
     ],
     "project": "ground.tiled-project",
+    "property.type": "int",
     "recentFiles": [
+        "terrain.tmx"
     ],
     "tileset.embedInMap": true,
     "tileset.tileSize": {
