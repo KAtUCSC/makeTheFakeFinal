@@ -37,9 +37,11 @@ class Play extends Phaser.Scene {
 
         //sky background
         let sky = this.add.rectangle(0, 0, map.widthInPixels*globalScaleFactor, map.heightInPixels*globalScaleFactor, 0xaaeeff).setOrigin(0).setDepth(-2)
-        //console.log(sky)
 
+        //create flag
+        this.flag = this.add.sprite(flagSpawn.x*globalScaleFactor, flagSpawn.y*globalScaleFactor, 'sSheet', 'flag').setScale(globalScaleFactor).setOrigin(.5, 1)
         //create bike and player
+        this.add.bitmapText(bikeSpawn.x*globalScaleFactor, bikeSpawn.y*globalScaleFactor, 'pixelU', 'Press D to GO', 32).setOrigin(0.5)
         this.bike = this.matter.add.sprite(bikeSpawn.x*globalScaleFactor, bikeSpawn.y*globalScaleFactor, 'sSheet', 'bikeWheeled').setScale(globalScaleFactor)
 
         //colliders
@@ -61,6 +63,8 @@ class Play extends Phaser.Scene {
         keyK = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.K)
 
         //testing
+        //flag setup
+        this.bike.end = false
 
     }
 
@@ -71,7 +75,18 @@ class Play extends Phaser.Scene {
             //this.bike.applyForce(new Phaser.Math.Vector2(0.01, 0))
             this.bike.setVelocityX(15)
         }
-        
+
+        this.bike.flagDistX = Math.abs(this.bike.x - this.flag.x)
+        this.bike.flagDistY = Math.abs(this.bike.y - this.flag.y)
+        //console.log(this.bike.flagDistX)
+
+        if(this.bike.flagDistX < 200 && this.bike.end == false) {
+            this.add.bitmapText(this.flag.x, this.flag.y, 'pixelU', 'Flag Reached!', 64).setOrigin(0.5)
+            this.time.delayedCall(3000, () => {
+                this.scene.start('scoreScene')
+            })
+            this.bike.end = true
+        }
     }
 
     

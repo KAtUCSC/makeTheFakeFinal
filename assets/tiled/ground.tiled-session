@@ -17,10 +17,10 @@
         },
         "terrain.tmx": {
             "scale": 1,
-            "selectedLayer": 0,
+            "selectedLayer": 1,
             "viewCenter": {
-                "x": 803.5,
-                "y": 280
+                "x": 1153.5,
+                "y": 182
             }
         },
         "terrain.tmx#ground": {

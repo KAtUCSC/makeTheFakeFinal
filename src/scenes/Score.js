@@ -19,6 +19,8 @@ class Score extends Phaser.Scene {
     //make things
     create() {
         //can recieve data
+        this.add.bitmapText(game.config.width/2, game.config.height*2/5, 'pixelU', 'Score scene', 64).setOrigin(0.5)
+        this.add.bitmapText(game.config.width/2, game.config.height*3/5, 'pixelU', 'Nothing here yet.', 32).setOrigin(0.5)
     }
 
     //do constantly

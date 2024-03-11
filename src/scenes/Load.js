@@ -31,7 +31,7 @@ class Load extends Phaser.Scene {
         //font
         this.load.bitmapFont('pixelU', 'fonts/pixelU.png', 'fonts/pixelU.xml')
         //atlas
-        this.load.atlas('sSheet', 'spritesheet.png', 'sprites.json')
+        this.load.atlas('sSheet', 'assets.png', 'sprites.json')
         //tilemap
         this.load.image('assetImage', 'assets.png')
         this.load.tilemapTiledJSON('tilemapJSON1', 'tiled/terrain1.json')
