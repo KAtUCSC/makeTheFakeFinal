@@ -16,11 +16,11 @@
             "scaleInDock": 2.0858
         },
         "terrain.tmx": {
-            "scale": 1,
-            "selectedLayer": 1,
+            "scale": 5.5,
+            "selectedLayer": 0,
             "viewCenter": {
-                "x": 1153.5,
-                "y": 182
+                "x": 1459,
+                "y": 195.8181818181818
             }
         },
         "terrain.tmx#ground": {
