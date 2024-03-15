@@ -4,7 +4,7 @@ class Bike extends Phaser.Physics.Matter.Sprite {
         super(scene.matter.world, x, y, texture, frame, {
             label: 'bike',
             restitution: 0,
-            friction: 0.01,
+            friction: 0.0,
             frictionAir: 0,
             frictionStatic: 0,
             vertices: [
@@ -13,6 +13,7 @@ class Bike extends Phaser.Physics.Matter.Sprite {
               { "x": 43, "y": 16 },
               { "x": 35, "y": 12 },
               { "x": 28, "y": 16 },
+              { "x": 25, "y": 15 },
               { "x": 23, "y": 12 },
               { "x": 30, "y": 3 },
               { "x": 40, "y": 3 }
@@ -23,12 +24,13 @@ class Bike extends Phaser.Physics.Matter.Sprite {
 
         //driving params
         this.xAcceleration = 20
-        this.xControlSpeed = 5
+        this.xControlSpeed = 10
         this.maxSpeed = 15
         this.minSpeed = 0
         this.angleSpeed = 10
         this.angleAcceleration = 1
 
+        this.targetSpeed = this.minSpeed
         this.velocityTarget = 0
         this.grounded = true
 
@@ -44,39 +46,30 @@ class Bike extends Phaser.Physics.Matter.Sprite {
         //scene.matter.world.on('collisionend', this.groundStopper, this)
 
         //testbed
+        this.end = false
         console.log(this)
     }
 
     update() {
         if(this.grounded){
+            //reset air timer
             this.airTime.elapsed = 0
             this.airTime.hasDispatched = false
-            //console.log(this.getVelocity().x)
-            /*
-            const currentXSpeed = this.getVelocity().x
-            this.velocityTarget = this.velocityTarget + keyD.isDown * this.xControlSpeed/10 - keyA.isDown * this.xControlSpeed/10
-            this.velocityTarget = Math.min(this.maxSpeed, Math.max(this.minSpeed, this.velocityTarget))
-            this.velocitySet = Math.min(this.velocityTarget, this.xAcceleration/10 + currentXSpeed)
-            console.log(this.velocityTarget, this.velocitySet)
-            this.setVelocityX(this.velocitySet)
-            */
-            if(keyD.isDown && this.getVelocity().x < 15) {
-                this.applyForceFrom({x: this.x - this.height/2, y: this.y}, {x: 0.02, y: 0.001})
+
+            //run the player's speed input function
+            this.updateTargetSpeed(this.end)
+            let bikeSpeed = this.getVelocity().x
+            //approach that speed
+            //the -0.2 is to prevent it from trying to move at 0 speed when the bike moves slightly backwards from bouncing
+            if(bikeSpeed < this.targetSpeed) {
+                let accerlationGoal = Math.min(this.xAcceleration/100, (this.targetSpeed - bikeSpeed)/10)
+                this.applyForceFrom({x: this.x - this.height/2, y: this.y}, {x: accerlationGoal/10, y: -0.001})
             }
-        } else if(this.airTime.elapsed > 100) {
-            //console.log(this.airTime.elapsed)
+        } else if(this.airTime.elapsed > 200) {
             let currentSpin = this.getAngularVelocity()
             this.setAngularVelocity(currentSpin*9/10)
             this.targetSpin = (keyD.isDown - keyA.isDown) * this.angleSpeed/100
             this.approachAngular(this.targetSpin)
-            /*
-            if(this.targetSpin > currentSpin) {
-                this.setAngularVelocity(Math.min(this.targetSpin, currentSpin + this.angleAcceleration/100))
-            } else {
-                this.setAngularVelocity(Math.max(this.targetSpin, currentSpin - this.angleAcceleration/100))
-            }
-            */
-            //console.log(this.targetSpin, this.getAngularVelocity())
         }
         
         //console.log(this.getVelocity().x)
@@ -119,5 +112,12 @@ class Bike extends Phaser.Physics.Matter.Sprite {
         }
         let spinSetter = currentSpin + Math.min(Math.abs(difference), this.angleAcceleration/100) * directionSign
         this.setAngularVelocity(spinSetter)
+    }
+
+    updateTargetSpeed(endFlag) {
+        this.targetSpeed = Math.min(this.maxSpeed, Math.max(this.targetSpeed + (keyD.isDown - keyA.isDown) * this.xControlSpeed/10, this.minSpeed))
+        if(endFlag) {
+            this.targetSpeed = 0
+        }
     }
 }
