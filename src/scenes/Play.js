@@ -28,7 +28,7 @@ class Play extends Phaser.Scene {
         const tileset = map.addTilesetImage('ground', 'assetImage')
         //foreground is the name of the layer in tiled
         const groundLayer = map.createLayer('foreground', 'ground', 0, 0).setScale(globalScaleFactor)
-        groundLayer.setCollisionByExclusion([-1, 0])
+        groundLayer.setCollisionByProperty({ collides: true})
 
         //find flag and bike pos
         const bikeSpawn = map.findObject('spawns', (obj) => obj.name === 'bikeSpawn')
@@ -42,11 +42,18 @@ class Play extends Phaser.Scene {
         this.flag = this.add.sprite(flagSpawn.x*globalScaleFactor, flagSpawn.y*globalScaleFactor, 'sSheet', 'flag').setScale(globalScaleFactor).setOrigin(.5, 1)
         //create bike and player
         this.add.bitmapText(bikeSpawn.x*globalScaleFactor, bikeSpawn.y*globalScaleFactor, 'pixelU', 'Press D to GO', 32).setOrigin(0.5)
-        this.bike = this.matter.add.sprite(bikeSpawn.x*globalScaleFactor, bikeSpawn.y*globalScaleFactor, 'sSheet', 'bikeWheeled').setScale(globalScaleFactor)
+        this.bike = new Bike(this, bikeSpawn.x*globalScaleFactor, bikeSpawn.y*globalScaleFactor, 'sSheet', 'bikeWheeled').setScale(globalScaleFactor)
+        //this.matter.add.sprite(100, 100, 'sSheet', 'bike', {})
 
         //colliders
-        this.groundCollider = this.matter.world.convertTilemapLayer(groundLayer, )
+        this.groundCollider = this.matter.world.convertTilemapLayer(groundLayer)
         console.log(this.groundCollider)
+        //collision detection setup
+        groundLayer.forEachTile(tile => {
+            if(tile.collides == true) {
+                tile.physics.matterBody.body.label = 'ground'
+            }
+        })
 
         //set physics bounds
         this.matter.world.setBounds(0, 0, map.widthInPixels*globalScaleFactor, map.heightInPixels*globalScaleFactor)
@@ -71,10 +78,7 @@ class Play extends Phaser.Scene {
     //do constantly
     update() {
         //automatically fed time and delta
-        if(keyD.isDown){
-            //this.bike.applyForce(new Phaser.Math.Vector2(0.01, 0))
-            this.bike.setVelocityX(15)
-        }
+        this.bike.update()
 
         this.bike.flagDistX = Math.abs(this.bike.x - this.flag.x)
         this.bike.flagDistY = Math.abs(this.bike.y - this.flag.y)
@@ -87,6 +91,10 @@ class Play extends Phaser.Scene {
             })
             this.bike.end = true
         }
+    }
+
+    testing(test) {
+        console.log(test)
     }
 
     
