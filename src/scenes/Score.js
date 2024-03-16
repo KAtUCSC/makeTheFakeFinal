@@ -19,12 +19,17 @@ class Score extends Phaser.Scene {
     //make things
     create() {
         //can recieve data
-        //define keys
-        keyD = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D)
+        this.add.rectangle(0, 0, game.config.width, game.config.height, 0x444444).setOrigin(0)
+        this.add.image(game.config.width*2/3 + 20, game.config.height*1/6, 'sSheet', 'bikeWheeled').setOrigin(.5).setScale(4).setAngle(-20)
 
         //text
-        this.add.bitmapText(game.config.width/2, game.config.height*2/5, 'pixelU', 'Score scene', 64).setOrigin(0.5)
-        this.add.bitmapText(game.config.width/2, game.config.height*3/5, 'pixelU', 'Press D to go to title.', 32).setOrigin(0.5)
+        //title
+        this.add.bitmapText(game.config.width/2 - 40, game.config.height*1/6, 'pixelU', 'SCORE', 64).setOrigin(.5)
+        this.add.bitmapText(game.config.width/2, game.config.height*5/6 + 32, 'pixelU', 'Press D to go to title.', 32).setOrigin(0.5)
+
+        //define keys
+        keyD = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D)
+        keyA = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A)
     }
 
     //do constantly
@@ -32,6 +37,9 @@ class Score extends Phaser.Scene {
         //automatically fed time and delta
         if(Phaser.Input.Keyboard.JustDown(keyD)){
             this.scene.start('titleScene')
+        }
+        if(Phaser.Input.Keyboard.JustDown(keyA)){
+            this.scene.start('creditsScene')
         }
     }
 
