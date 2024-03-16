@@ -8,6 +8,7 @@ class Bike extends Phaser.Physics.Matter.Sprite {
             frictionAir: 0,
             frictionStatic: 0.1,
             vertices: [
+              { "x": 47, "y": 10 },
               { "x": 47, "y": 12 },
               { "x": 46, "y": 14 },
               { "x": 45, "y": 15.5 },
@@ -19,6 +20,7 @@ class Bike extends Phaser.Physics.Matter.Sprite {
               { "x": 25, "y": 15.5 },
               { "x": 24, "y": 14 },
               { "x": 23, "y": 12 },
+              { "x": 23, "y": 10 },
               { "x": 30, "y": 3 },
               { "x": 40, "y": 3 }
             ]

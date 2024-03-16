@@ -19,15 +19,21 @@ class Title extends Phaser.Scene {
     //make things
     create() {
         //can recieve data
-        this.add.bitmapText(0, 0, 'pixelU', 'Title text. Placeholder. BROKEN BONEZ', 16)
-        this.add.bitmapText(0, 20, 'pixelU', 'press [D] to continue', 16)
+        //graphics
+        this.add.rectangle(0, 0, game.config.width, game.config.height, 0x444444).setOrigin(0)
+        this.add.image(game.config.width*2/3, game.config.height*3/4, 'sSheet', 'bikeWheeled').setScale(8).setAngle(-20)
+
+        //text
+        //title
+        this.add.bitmapText(game.config.width/2, game.config.height*2/6 - 64, 'pixelU', 'BROKEN', 64).setOrigin(.5)
+        this.add.bitmapText(game.config.width/2, game.config.height*2/6, 'pixelU', 'BONEZ', 64).setOrigin(.5)
+        //menu controls
+        this.add.bitmapText(game.config.width*1/3, game.config.height*6/12, 'pixelU', 'press [D] to RIDE', 32).setOrigin(.5)
+        this.add.bitmapText(game.config.width*1/3, game.config.height*6/12 + 32, 'pixelU', 'press [A] for tutorial', 32).setOrigin(.5)
 
         //define keys
         keyD = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D)
-
-        //testing
-        this.add.rectangle(0, 200, 600, 300, 0x00ff00)
-        this.add.image(100, 100, 'sSheet', 'bikeWheeled').setScale(4)
+        keyA = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A)
     }
 
     //do constantly
@@ -35,6 +41,9 @@ class Title extends Phaser.Scene {
         //automatically fed time and delta
         if(Phaser.Input.Keyboard.JustDown(keyD)){
             this.scene.start('playScene')
+        }
+        if(Phaser.Input.Keyboard.JustDown(keyA)){
+            this.scene.start('tutorialScene')
         }
     }
 
