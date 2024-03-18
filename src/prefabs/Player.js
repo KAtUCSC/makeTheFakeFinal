@@ -58,7 +58,7 @@ class Player extends Phaser.Physics.Matter.Sprite {
         })
         //restore transformations
         this.setScale(scale)
-        this.setAngle(angle)
+        this.setAngle(0)
         this.setVelocity(velocity['x'], velocity['y'])
         this.setAngularVelocity(spin)
         

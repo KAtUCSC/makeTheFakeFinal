@@ -48,12 +48,11 @@ class Bike extends Phaser.Physics.Matter.Sprite {
         this.airTime.paused = true
         console.log(this.airTime)
 
-        //collision testing
+        //collision detection
         scene.matter.world.on('collisionactive', this.groundSetter, this)
-        //scene.matter.world.on('collisionend', this.groundStopper, this)
         scene.matter.world.on('collisionstart', this.checkAngle, this)
 
-        //testbed
+        //flags and player
         this.end = false
         this.crashed = false
         this.player = new Player(scene, this.x, this.y, 'sSheet', 'player', this)
@@ -63,6 +62,7 @@ class Bike extends Phaser.Physics.Matter.Sprite {
         this.player.update(this)
 
         if(this.crashed) {
+            //if crashed, skip the below things
             return
         }
 
@@ -72,21 +72,25 @@ class Bike extends Phaser.Physics.Matter.Sprite {
             this.airTime.hasDispatched = false
         }
         
+        //using the air timer instead of the grounded flag allows you to keep driving and keep speed after bouncing on the ground
+        //makes movement more consistent and smoother
         if(this.airTime.elapsed < 150) {
-            //using the air timer instead of the grounded flag allows you to keep driving and keep speed after bouncing on the ground
-            //makes movement more consistent and smoother
             //run the player's speed input function
             this.updateTargetSpeed(this.end)
             let bikeSpeed = this.getVelocity().x
+
             //approach that speed
-            //the -0.2 is to prevent it from trying to move at 0 speed when the bike moves slightly backwards from bouncing
-            if(true) {//bikeSpeed < this.targetSpeed
+            if(true) {
                 let accerlationGoal = Math.min(this.xAcceleration/100, Math.max(-this.xAcceleration/300, (this.targetSpeed - bikeSpeed)/10))
                 this.applyForceFrom({x: this.x, y: this.y}, {x: accerlationGoal/10, y: 0})
             }
+        //if you have enough air time, give them tilt control
         } else if(this.airTime.elapsed > 200) {
+            //spin slowdown feels nice
             let currentSpin = this.getAngularVelocity()
             this.setAngularVelocity(currentSpin*9/10)
+            
+            //feed our spin accel function a target spin for it to approach
             this.targetSpin = (keyD.isDown - keyA.isDown) * this.angleSpeed/100
             this.approachAngular(this.targetSpin)
         }
@@ -97,9 +101,12 @@ class Bike extends Phaser.Physics.Matter.Sprite {
     }
 
     groundSetter(matterCollide) {
+        //loop through collision pairs, if one of them is of the bike and the ground, set ground to true
+        //ground is set false at the end of every bike update
         for (let i = 0; i < matterCollide.pairs.length; i++) {
             const bodyA = matterCollide.pairs[i].bodyA
             const bodyB = matterCollide.pairs[i].bodyB
+
             if((bodyA.label === 'bike' && bodyB.label === 'ground') ||
             (bodyB.label === 'bike' && bodyA.label === 'ground')) {
                 this.grounded = true
@@ -108,16 +115,21 @@ class Bike extends Phaser.Physics.Matter.Sprite {
     }
 
     checkAngle(matterCollide, bodyA, bodyB) {
+        //get bike angle (given in radians)
         let angle = 0
         if(bodyA.label === 'bike') {
             angle = bodyA.angle
         } else {
             angle = bodyB.angle
         }
+        //divide by pi/2 to turn the circle from 2pi into 4 units, can be treated as 4 quadrants of the circle
+        //since rotation can be more than one full rotation, use modulo 4 to get the actual quadrant
+        //+ is clockwise, - is counterclockwise
+        //0 is straight up, +-4 is a full circle, +-2 is upside down
+        //thus, math abs 1 through 3 is the bike being rotated 90 degrees or more and we set that to our crash zone
         angle = (2*angle/Math.PI)%4
-        //console.log(angle)
         if(Math.abs(angle) > 1 && Math.abs(angle) < 3 && this.crashed != true) {
-            console.log('CRASH', angle)
+            //we also check if crashed isn't true so it doesn't keep crashing while its on its back after crashing
             this.crashBike()
         }
     }
@@ -145,7 +157,9 @@ class Bike extends Phaser.Physics.Matter.Sprite {
             { "x":47, "y":40 },
             { "x":48, "y":34 }
             ],
-            friction: 0.1
+            friction: 0.1,
+            frictionStatic: 0.5,
+            frictionAir: 0.5
         })
         //restore transformations
         this.setScale(scale)
@@ -160,25 +174,39 @@ class Bike extends Phaser.Physics.Matter.Sprite {
         this.crashed = true
         //stop camera
         this.scene.cameras.main.stopFollow()
-        //crash player
+        //crash player and handle death
         this.player.crashPlayer()
+        this.handleDeath()
+    }
 
-        //testing
-        console.log(this.body)
+    handleDeath() {
+        this.scene.time.delayedCall(5000, () => {
+            this.scene.scene.start('titleScene')
+        })
     }
 
     approachAngular(target) {
+        //get how much you need to change the angle and the sign of that change
         let currentSpin = this.getAngularVelocity()
         let difference = target - currentSpin
         let directionSign = Math.abs(difference)/difference
+        //direction sign can be nan through a divide by zero
+        //if difference is zero, set to 1 to prevent errors
         if (isNaN(directionSign)) {
             directionSign = 1
         }
+        //set spin to whichever has the smaller magnitude: the difference or the spin acceleration
+        //this lets it smooth out as you get close to the target
+        //multiply by the direction sign to push it towards the target spin
         let spinSetter = currentSpin + Math.min(Math.abs(difference), this.angleAcceleration/100) * directionSign
         this.setAngularVelocity(spinSetter)
     }
 
     updateTargetSpeed(endFlag) {
+        //target speed is clamped between the max speed and the min speed
+        //target speed starts at min speed
+        //uses keyd-keya to act as 1 or -1, then multiplies that by x control speed
+        //adds that to the target speed to either add or subtract the x control from the target speed depending on input
         this.targetSpeed = Math.min(this.maxSpeed, Math.max(this.targetSpeed + (keyD.isDown - keyA.isDown) * this.xControlSpeed/10, this.minSpeed))
         if(endFlag) {
             this.targetSpeed = 0
@@ -186,6 +214,7 @@ class Bike extends Phaser.Physics.Matter.Sprite {
     }
 
     scaleBoth(amount) {
+        //use this instead of directly setting scale to keep both scaled together
         this.setScale(amount)
         this.player.setScale(amount)
     }

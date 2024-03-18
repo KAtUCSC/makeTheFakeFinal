@@ -3,7 +3,7 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "terrain.tmx",
+    "activeFile": "",
     "expandedProjectPaths": [
         "."
     ],
@@ -16,11 +16,11 @@
             "scaleInDock": 2.0858
         },
         "terrain.tmx": {
-            "scale": 0.5,
-            "selectedLayer": 0,
+            "scale": 1.5,
+            "selectedLayer": 1,
             "viewCenter": {
-                "x": 721,
-                "y": 446
+                "x": 3119,
+                "y": 362.6666666666667
             }
         },
         "terrain.tmx#ground": {
