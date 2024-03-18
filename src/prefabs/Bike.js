@@ -27,11 +27,12 @@ class Bike extends Phaser.Physics.Matter.Sprite {
         })
         //add to scene
 		scene.add.existing(this)
+        this.setCollisionGroup(-6)
 
         //driving params
         this.xAcceleration = 20
         this.xControlSpeed = 10
-        this.maxSpeed = 15
+        this.maxSpeed = 13
         this.minSpeed = 1
         this.angleSpeed = 10
         this.angleAcceleration = 1
@@ -54,10 +55,17 @@ class Bike extends Phaser.Physics.Matter.Sprite {
 
         //testbed
         this.end = false
-        console.log(this)
+        this.crashed = false
+        this.player = new Player(scene, this.x, this.y, 'sSheet', 'player', this)
     }
 
     update() {
+        this.player.update(this)
+
+        if(this.crashed) {
+            return
+        }
+
         if(this.grounded){
             //reset air timer
             this.airTime.elapsed = 0
@@ -74,8 +82,7 @@ class Bike extends Phaser.Physics.Matter.Sprite {
             //the -0.2 is to prevent it from trying to move at 0 speed when the bike moves slightly backwards from bouncing
             if(true) {//bikeSpeed < this.targetSpeed
                 let accerlationGoal = Math.min(this.xAcceleration/100, Math.max(-this.xAcceleration/300, (this.targetSpeed - bikeSpeed)/10))
-                //console.log(this.xAcceleration/100, (this.targetSpeed - bikeSpeed)/10)
-                this.applyForceFrom({x: this.x, y: this.y}, {x: accerlationGoal/10, y: 0}) // - this.height/2
+                this.applyForceFrom({x: this.x, y: this.y}, {x: accerlationGoal/10, y: 0})
             }
         } else if(this.airTime.elapsed > 200) {
             let currentSpin = this.getAngularVelocity()
@@ -84,16 +91,13 @@ class Bike extends Phaser.Physics.Matter.Sprite {
             this.approachAngular(this.targetSpin)
         }
         
-        //console.log(this.getVelocity().x)
         this.grounded = false
         this.airTime.paused = false
 
     }
 
     groundSetter(matterCollide) {
-        //console.log(matterCollide)
         for (let i = 0; i < matterCollide.pairs.length; i++) {
-            //console.log(matterCollide.pairs[i])
             const bodyA = matterCollide.pairs[i].bodyA
             const bodyB = matterCollide.pairs[i].bodyB
             if((bodyA.label === 'bike' && bodyB.label === 'ground') ||
@@ -111,10 +115,56 @@ class Bike extends Phaser.Physics.Matter.Sprite {
             angle = bodyB.angle
         }
         angle = (2*angle/Math.PI)%4
-        console.log(angle)
-        if(Math.abs(angle) > 1 && Math.abs(angle) < 3) {
+        //console.log(angle)
+        if(Math.abs(angle) > 1 && Math.abs(angle) < 3 && this.crashed != true) {
             console.log('CRASH', angle)
+            this.crashBike()
         }
+    }
+
+    crashBike() {
+        this.setTexture('sSheet', 'bikeCrashed')
+
+        //save transformations
+        let scale = this.scale
+        let angle = this.angle
+        let velocity = this.getVelocity()
+        let spin = this.getAngularVelocity()
+        
+        //reset scale
+        this.setScale(1)
+        this.setAngle(0)
+        //set new body at same location
+        this.setBody({
+            type: 'fromVerts',
+            x: this.x,
+            y: this.y,
+            verts: [
+            { "x":25, "y":34 },
+            { "x":26, "y":40 },
+            { "x":47, "y":40 },
+            { "x":48, "y":34 }
+            ],
+            friction: 0.1
+        })
+        //restore transformations
+        this.setScale(scale)
+        this.setAngle(angle)
+        this.setVelocity(velocity['x'], velocity['y'])
+        this.setAngularVelocity(spin)
+
+        //lower image to match hitbox
+        this.setOrigin(0.5, 0.65)
+
+        //remove player control
+        this.crashed = true
+        //stop camera
+        this.scene.cameras.main.stopFollow()
+        //crash player
+        this.player.crashPlayer()
+
+        //testing
+        console.log(this.body)
     }
 
     approachAngular(target) {
@@ -133,5 +183,10 @@ class Bike extends Phaser.Physics.Matter.Sprite {
         if(endFlag) {
             this.targetSpeed = 0
         }
+    }
+
+    scaleBoth(amount) {
+        this.setScale(amount)
+        this.player.setScale(amount)
     }
 }

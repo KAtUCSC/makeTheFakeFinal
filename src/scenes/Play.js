@@ -41,8 +41,8 @@ class Play extends Phaser.Scene {
         //create flag
         this.flag = this.add.sprite(flagSpawn.x*globalScaleFactor, flagSpawn.y*globalScaleFactor, 'sSheet', 'flag').setScale(globalScaleFactor).setOrigin(.5, 1)
         //create bike and player
-        this.add.bitmapText(bikeSpawn.x*globalScaleFactor, bikeSpawn.y*globalScaleFactor, 'pixelU', 'Press D to GO', 32).setOrigin(0.5)
-        this.bike = new Bike(this, bikeSpawn.x*globalScaleFactor, bikeSpawn.y*globalScaleFactor, 'sSheet', 'bikeWheeled').setScale(globalScaleFactor)
+        this.bike = new Bike(this, bikeSpawn.x*globalScaleFactor, bikeSpawn.y*globalScaleFactor, 'sSheet', 'bikeWheeled')
+        this.bike.scaleBoth(globalScaleFactor)
         //this.matter.add.sprite(100, 100, 'sSheet', 'bike', {})
 
         //colliders
@@ -61,7 +61,7 @@ class Play extends Phaser.Scene {
         
         //set camera bounds
         this.cameras.main.setBounds(0, 0, map.widthInPixels*globalScaleFactor, map.heightInPixels*globalScaleFactor)
-        this.cameras.main.startFollow(this.bike, true, 0.25, 0.25, 0, 0)
+        this.cameras.main.startFollow(this.bike, true, 0.25, 0.25, 0, 0).setFollowOffset(-game.config.width/4, 0)
 
         //define controls
         keyD = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D)
