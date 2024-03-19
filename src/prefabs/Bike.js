@@ -60,7 +60,7 @@ class Bike extends Phaser.Physics.Matter.Sprite {
     update() {
         this.player.update(this)
 
-        if(this.crashed || this.end) {
+        if(this.crashed) {
             //if crashed, skip the below things
             return
         }        
@@ -138,6 +138,9 @@ class Bike extends Phaser.Physics.Matter.Sprite {
     }
 
     flipCheck() {
+        if(this.end) {
+            return
+        }
         //turn 2pi circle into 4 quadrants
         let flipAngle = this.rotation*2/Math.PI
         //get the sign
@@ -198,7 +201,7 @@ class Bike extends Phaser.Physics.Matter.Sprite {
         this.scene.cameras.main.stopFollow()
         //crash player and handle death
         this.player.crashPlayer()
-        this.scene.changeScore(-1000)
+        this.scene.changeScore(-500)
         this.handleDeath()
     }
 
