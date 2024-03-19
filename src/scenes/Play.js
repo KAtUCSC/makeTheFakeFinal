@@ -43,7 +43,6 @@ class Play extends Phaser.Scene {
         //create bike and player
         this.bike = new Bike(this, bikeSpawn.x*globalScaleFactor, bikeSpawn.y*globalScaleFactor, 'sSheet', 'bikeWheeled')
         this.bike.scaleBoth(globalScaleFactor)
-        //this.matter.add.sprite(100, 100, 'sSheet', 'bike', {})
 
         //colliders
         this.groundCollider = this.matter.world.convertTilemapLayer(groundLayer)
@@ -69,7 +68,9 @@ class Play extends Phaser.Scene {
         keyJ = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.J)
         keyK = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.K)
 
-        //testing
+        //create ui
+        this.ui = new UiHandler(this)
+
         //flag setup
         this.bike.end = false
 
@@ -96,7 +97,7 @@ class Play extends Phaser.Scene {
 
     changeScore(value) {
         game.playerStats.score += value
-        console.log(value, game.playerStats.score)
+        this.ui.score.text = game.playerStats.score
         let text = this.add.bitmapText(this.bike.x, this.bike.y - this.bike.height, 'pixelU', value, 32).setOrigin(.5)
         this.time.delayedCall(1000, () => text.destroy())
     }
