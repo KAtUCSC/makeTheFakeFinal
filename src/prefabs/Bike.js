@@ -128,7 +128,10 @@ class Bike extends Phaser.Physics.Matter.Sprite {
         //thus, math abs 1 through 3 is the bike being rotated 90 degrees or more and we set that to our crash zone
         angle = (2*angle/Math.PI)%4
         if(Math.abs(angle) > 1 && Math.abs(angle) < 3) {
-            //we also check if crashed isn't true so it doesn't keep crashing while its on its back after crashing
+            let crashSeverity = Math.abs(Math.abs(angle) - 2)
+            let removeBones = -Math.round(3 - (crashSeverity * 2))
+            this.scene.changeBones(removeBones)
+            console.log(removeBones)
             this.crashBike()
         } else if(this.airTime.elapsed > 1000) {
             //if flying for a second and not crashlanding, add score
@@ -208,7 +211,7 @@ class Bike extends Phaser.Physics.Matter.Sprite {
     handleDeath() {
         this.scene.changeHelmets()
         console.log(game.playerStats)
-        if(game.playerStats.helmets > 0) {
+        if(game.playerStats.helmets > 0 && game.playerStats.bones > 0) {
             this.scene.time.delayedCall(5000, () => {
                 this.scene.scene.restart()
             })

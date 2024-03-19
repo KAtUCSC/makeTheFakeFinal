@@ -71,6 +71,7 @@ class Play extends Phaser.Scene {
         //create ui
         this.ui = new UiHandler(this)
         this.ui.updateHelmets(game.playerStats.helmets)
+        this.ui.updateBones(game.playerStats.bones)
 
         //flag setup
         this.bike.end = false
@@ -110,5 +111,9 @@ class Play extends Phaser.Scene {
         this.ui.updateHelmets(game.playerStats.helmets)
     }
 
-    
+    changeBones(value) {
+        game.playerStats.bones += value
+        game.playerStats.bones = Math.max(0, game.playerStats.bones)
+        this.ui.updateBones(game.playerStats.bones)
+    }    
 }
