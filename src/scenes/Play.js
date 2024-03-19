@@ -60,7 +60,7 @@ class Play extends Phaser.Scene {
         
         //set camera bounds
         this.cameras.main.setBounds(0, 0, map.widthInPixels*globalScaleFactor, map.heightInPixels*globalScaleFactor)
-        this.cameras.main.startFollow(this.bike, true, 0.25, 0.25, 0, 0).setFollowOffset(-game.config.width/4, game.config.height/8)
+        this.cameras.main.startFollow(this.bike, true, 0.75, 0.75, 0, 0).setFollowOffset(-game.config.width/4, game.config.height/8)
 
         //define controls
         keyD = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D)

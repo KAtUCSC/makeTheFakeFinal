@@ -3,9 +3,9 @@ class Bike extends Phaser.Physics.Matter.Sprite {
         //scene.matter.world from: https://phaser.discourse.group/t/how-to-enable-physics-on-extended-sprite-class/4220/5
         super(scene.matter.world, x, y, texture, frame, {
             label: 'bike',
-            restitution: 0,
-            friction: 0.0,
-            frictionAir: 0,
+            restitution: 0.1,
+            friction: 0,
+            frictionAir: 0.01,
             frictionStatic: 0.1,
             vertices: [
               { "x": 47, "y": 10 },
