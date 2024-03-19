@@ -70,6 +70,7 @@ class Play extends Phaser.Scene {
 
         //create ui
         this.ui = new UiHandler(this)
+        this.ui.updateHelmets(game.playerStats.helmets)
 
         //flag setup
         this.bike.end = false
@@ -102,6 +103,7 @@ class Play extends Phaser.Scene {
 
     changeHelmets() {
         game.playerStats.helmets -= 1
+        this.ui.updateHelmets(game.playerStats.helmets)
     }
 
     

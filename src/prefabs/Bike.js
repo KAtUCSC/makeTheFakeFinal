@@ -60,7 +60,7 @@ class Bike extends Phaser.Physics.Matter.Sprite {
     update() {
         this.player.update(this)
 
-        if(this.crashed) {
+        if(this.crashed || this.end) {
             //if crashed, skip the below things
             return
         }        
@@ -110,7 +110,7 @@ class Bike extends Phaser.Physics.Matter.Sprite {
     }
 
     checkAngle(matterCollide, bodyA, bodyB) {
-        if(this.crashed) {
+        if(this.crashed || this.end) {
             //if crashed, don't care about handling a crash anymore
             return
         }
@@ -198,7 +198,7 @@ class Bike extends Phaser.Physics.Matter.Sprite {
         this.scene.cameras.main.stopFollow()
         //crash player and handle death
         this.player.crashPlayer()
-        this.scene.changeScore(-100)
+        this.scene.changeScore(-1000)
         this.handleDeath()
     }
 
