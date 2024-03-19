@@ -46,7 +46,6 @@ class Bike extends Phaser.Physics.Matter.Sprite {
         this.airTime.repeat = -1
         this.airTime.loop = true
         this.airTime.paused = true
-        console.log(this.airTime)
 
         //collision detection
         scene.matter.world.on('collisionactive', this.groundSetter, this)
@@ -64,14 +63,7 @@ class Bike extends Phaser.Physics.Matter.Sprite {
         if(this.crashed) {
             //if crashed, skip the below things
             return
-        }
-
-        if(this.grounded){
-            //reset air timer
-            this.airTime.elapsed = 0
-            this.airTime.hasDispatched = false
-        }
-        
+        }        
         //using the air timer instead of the grounded flag allows you to keep driving and keep speed after bouncing on the ground
         //makes movement more consistent and smoother
         if(this.airTime.elapsed < 150) {
@@ -93,6 +85,9 @@ class Bike extends Phaser.Physics.Matter.Sprite {
             //feed our spin accel function a target spin for it to approach
             this.targetSpin = (keyD.isDown - keyA.isDown) * this.angleSpeed/100
             this.approachAngular(this.targetSpin)
+
+            //check for flip
+            this.flipCheck()
         }
         
         this.grounded = false
@@ -109,12 +104,16 @@ class Bike extends Phaser.Physics.Matter.Sprite {
 
             if((bodyA.label === 'bike' && bodyB.label === 'ground') ||
             (bodyB.label === 'bike' && bodyA.label === 'ground')) {
-                this.grounded = true
+                this.groundBike()
             }
         }
     }
 
     checkAngle(matterCollide, bodyA, bodyB) {
+        if(this.crashed) {
+            //if crashed, don't care about handling a crash anymore
+            return
+        }
         //get bike angle (given in radians)
         let angle = 0
         if(bodyA.label === 'bike') {
@@ -128,10 +127,34 @@ class Bike extends Phaser.Physics.Matter.Sprite {
         //0 is straight up, +-4 is a full circle, +-2 is upside down
         //thus, math abs 1 through 3 is the bike being rotated 90 degrees or more and we set that to our crash zone
         angle = (2*angle/Math.PI)%4
-        if(Math.abs(angle) > 1 && Math.abs(angle) < 3 && this.crashed != true) {
+        if(Math.abs(angle) > 1 && Math.abs(angle) < 3) {
             //we also check if crashed isn't true so it doesn't keep crashing while its on its back after crashing
             this.crashBike()
+        } else if(this.airTime.elapsed > 1000) {
+            //if flying for a second and not crashlanding, add score
+            this.scene.changeScore(100)
         }
+        this.groundBike()
+    }
+
+    flipCheck() {
+        //turn 2pi circle into 4 quadrants
+        let flipAngle = this.rotation*2/Math.PI
+        //get the sign
+        let flipSign = Math.abs(this.rotation)/this.rotation
+        if(Math.abs(flipAngle) > 3) {
+            //console.log(flipAngle, 'did a flip')
+            this.scene.changeScore(100)
+            //reset rotation by adding 2pi * the opposite sign
+            //prevents doing a flip per frame from the same flip
+            this.rotation += 2*Math.PI * -flipSign
+        }
+    }
+
+    groundBike() {
+        this.grounded = true
+        this.airTime.elapsed = 0
+        this.airTime.hasDispatched = false
     }
 
     crashBike() {

@@ -9,6 +9,11 @@ class Title extends Phaser.Scene {
     //happens once every time the scene is restarted/added
     init() {
         //can recieve data
+        game.playerStats = {
+            score: 0,
+            bones: 5,
+            helmets: 3
+        }
     }
 
     //load assets

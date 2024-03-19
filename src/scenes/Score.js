@@ -25,6 +25,7 @@ class Score extends Phaser.Scene {
         //text
         //title
         this.add.bitmapText(game.config.width/2 - 40, game.config.height*1/6, 'pixelU', 'SCORE', 64).setOrigin(.5)
+        this.add.bitmapText(game.config.width/2, game.config.height*1/2, 'pixelU', game.playerStats.score, 64).setOrigin(0.5)
         this.add.bitmapText(game.config.width/2, game.config.height*5/6, 'pixelU', 'Press [A] to view credits.', 32).setOrigin(0.5)
         this.add.bitmapText(game.config.width/2, game.config.height*5/6 + 32, 'pixelU', 'Press [D] to go to title.', 32).setOrigin(0.5)
 

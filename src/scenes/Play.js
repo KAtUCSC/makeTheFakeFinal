@@ -47,7 +47,7 @@ class Play extends Phaser.Scene {
 
         //colliders
         this.groundCollider = this.matter.world.convertTilemapLayer(groundLayer)
-        console.log(this.groundCollider)
+        //console.log(this.groundCollider)
         //collision detection setup
         groundLayer.forEachTile(tile => {
             if(tile.collides == true) {
@@ -61,7 +61,7 @@ class Play extends Phaser.Scene {
         
         //set camera bounds
         this.cameras.main.setBounds(0, 0, map.widthInPixels*globalScaleFactor, map.heightInPixels*globalScaleFactor)
-        this.cameras.main.startFollow(this.bike, true, 0.25, 0.25, 0, 0).setFollowOffset(-game.config.width/4, 0)
+        this.cameras.main.startFollow(this.bike, true, 0.25, 0.25, 0, 0).setFollowOffset(-game.config.width/4, game.config.height/8)
 
         //define controls
         keyD = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D)
@@ -84,17 +84,21 @@ class Play extends Phaser.Scene {
         this.bike.flagDistY = Math.abs(this.bike.y - this.flag.y)
         //console.log(this.bike.flagDistX)
 
-        if(this.bike.flagDistX < 200 && this.bike.end == false) {
+        if(this.bike.flagDistX < this.flag.width/2 && this.bike.end == false) {
             this.add.bitmapText(this.flag.x, this.flag.y, 'pixelU', 'Flag Reached!', 64).setOrigin(0.5)
             this.time.delayedCall(3000, () => {
                 this.scene.start('scoreScene')
             })
             this.bike.end = true
+            console.log(game.playerStats.score)
         }
     }
 
-    testing(test) {
-        console.log(test)
+    changeScore(value) {
+        game.playerStats.score += value
+        console.log(value, game.playerStats.score)
+        let text = this.add.bitmapText(this.bike.x, this.bike.y - this.bike.height, 'pixelU', value, 32).setOrigin(.5)
+        this.time.delayedCall(1000, () => text.destroy())
     }
 
     
