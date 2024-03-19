@@ -114,6 +114,11 @@ class Bike extends Phaser.Physics.Matter.Sprite {
             //if crashed, don't care about handling a crash anymore
             return
         }
+        //if doing a stunt while landing, explode
+        if(this.player.stunting) {
+            this.scene.changeBones(-1)
+            this.crashBike()
+        }
         //get bike angle (given in radians)
         let angle = 0
         if(bodyA.label === 'bike' || bodyA.label === 'player') {
@@ -131,7 +136,6 @@ class Bike extends Phaser.Physics.Matter.Sprite {
             let crashSeverity = Math.abs(Math.abs(angle) - 2)
             let removeBones = -Math.round(3 - (crashSeverity * 2))
             this.scene.changeBones(removeBones)
-            console.log(removeBones)
             this.crashBike()
         } else if(this.airTime.elapsed > 1000) {
             //if flying for a second and not crashlanding, add score
@@ -149,7 +153,8 @@ class Bike extends Phaser.Physics.Matter.Sprite {
         //get the sign
         let flipSign = Math.abs(this.rotation)/this.rotation
         if(Math.abs(flipAngle) > 3) {
-            this.scene.changeScore(100)
+            let scoreChange = (true + this.player.stunting) * 100 
+            this.scene.changeScore(scoreChange)
             //reset rotation by adding 2pi * the opposite sign
             //prevents doing a flip per frame from the same flip
             this.rotation += 2*Math.PI * -flipSign
@@ -210,7 +215,6 @@ class Bike extends Phaser.Physics.Matter.Sprite {
 
     handleDeath() {
         this.scene.changeHelmets()
-        console.log(game.playerStats)
         if(game.playerStats.helmets > 0 && game.playerStats.bones > 0) {
             this.scene.time.delayedCall(5000, () => {
                 this.scene.scene.restart()

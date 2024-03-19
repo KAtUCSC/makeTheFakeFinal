@@ -32,7 +32,6 @@ class Play extends Phaser.Scene {
 
         //find flag and bike pos
         const bikeSpawn = map.findObject('spawns', (obj) => obj.name === 'bikeSpawn')
-        //console.log(bikeSpawn)
         const flagSpawn = map.findObject('spawns', (obj) => obj.name === 'flagSpawn')
 
         //sky background
@@ -46,7 +45,6 @@ class Play extends Phaser.Scene {
 
         //colliders
         this.groundCollider = this.matter.world.convertTilemapLayer(groundLayer)
-        //console.log(this.groundCollider)
         //collision detection setup
         groundLayer.forEachTile(tile => {
             if(tile.collides == true) {

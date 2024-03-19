@@ -12,9 +12,18 @@ class Player extends Phaser.Physics.Matter.Sprite {
         })
         //add to scene
 		scene.add.existing(this)
+        //stop from colliding with bike
         this.setCollisionGroup(-6)
-        //this.setOrigin(0.75, 0.75)
+        //count player hitbox for crash checking
         scene.matter.world.on('collisionstart', bike.checkAngle, bike)
+
+        //control
+        this.stunting = false
+        this.offset = {
+            x: 0,
+            y: -40,
+            angle: 20
+        }
     }
 
     update(bike) {
@@ -22,16 +31,72 @@ class Player extends Phaser.Physics.Matter.Sprite {
             return
         }
 
-        this.matchBike(bike)
-        this.angle = bike.angle + 20
+        let stuntInputs = keyJ.isDown + keyK.isDown
+        if(stuntInputs && !this.stunting && bike.airTime.elapsed > 200) {
+            this.doStunt(bike, keyJ.isDown, keyK.isDown)
+        }
+
+        //stay connected to bike
+        this.matchBike(bike, this.offset)
     }
 
-    matchBike(bike) {
-        //adapted from https://stackoverflow.com/questions/34372480/rotate-point-about-another-point-in-degrees-python
-        let xr = -Math.sin(bike.rotation)*(-40) + bike.x
-        let yr = Math.cos(bike.rotation)*(-40) + bike.y
-        this.setPosition(xr, yr)
+    doStunt(bike, jDown, kDown) {
+        this.stunting = true
+        if(jDown) {
+            this.offset = {
+                x: -40,
+                y: -55,
+                angle: 10
+            }
+            this.setTexture('sSheet', 'stunt1')
+            this.resetBike(bike, 1000, 250)
+        } else if(kDown) {
+            this.offset = {
+                x: -30,
+                y: -40,
+                angle: 0
+            }
+            this.setTexture('sSheet', 'stunt2')
+            this.resetBike(bike, 500, 100)
+        }
     }
+
+    resetBike(bike, time, score) {
+        this.scene.time.delayedCall(time, () => {
+            if(bike.crashed) {
+                return
+            }
+            this.offset = {
+                x: 0,
+                y: -40,
+                angle: 20
+            }
+            this.setTexture('sSheet', 'player')
+            this.stunting = false
+            this.scene.changeScore(score)
+        }, null, this)
+    }
+
+    matchBike(bike, offset) {
+        //adapted from https://stackoverflow.com/questions/34372480/rotate-point-about-another-point-in-degrees-python
+        let bikeCos = Math.cos(bike.rotation)
+        let bikeSin = Math.sin(bike.rotation)
+        let xr = bikeCos * offset.x - bikeSin * offset.y + bike.x
+        let yr = bikeSin * offset.x + bikeCos * offset.y + bike.y
+        this.setPosition(xr, yr)
+        this.angle = bike.angle + offset.angle
+    }
+    /*
+    original:
+    (x,y,xo,yo,theta): #rotate x,y around xo,yo by theta (rad)
+    xr=math.cos(theta)*(x-xo)-math.sin(theta)*(y-yo)   + xo
+    yr=math.sin(theta)*(x-xo)+math.cos(theta)*(y-yo)  + yo
+    return [xr,yr]
+    anything with x-xo is zero, remove those terms, anything with y-yo is -40
+    why? we manually set our upright offset to 0, -40
+
+    update: since values are now dynamic we implemented the whole thing
+    */
 
     crashPlayer() {
         this.setTexture('sSheet', 'playerCrashed')
@@ -66,13 +131,4 @@ class Player extends Phaser.Physics.Matter.Sprite {
         //set origin to match
         this.setOrigin(0.5, 0.6)
     }
-    /*
-    original:
-    (x,y,xo,yo,theta): #rotate x,y around xo,yo by theta (rad)
-    xr=math.cos(theta)*(x-xo)-math.sin(theta)*(y-yo)   + xo
-    yr=math.sin(theta)*(x-xo)+math.cos(theta)*(y-yo)  + yo
-    return [xr,yr]
-    anything with x-xo is zero, remove those terms, anything with y-yo is -40
-    why? we manually set our upright offset to 0, -40
-    */
 }
