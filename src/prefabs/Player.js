@@ -2,6 +2,7 @@ class Player extends Phaser.Physics.Matter.Sprite {
     constructor(scene, x, y, texture, frame, bike) {
         //scene.matter.world from: https://phaser.discourse.group/t/how-to-enable-physics-on-extended-sprite-class/4220/5
         super(scene.matter.world, x, y, texture, frame, {
+            label: 'player',
             vertices: [
                 { "x":49, "y":13 },
                 { "x":57, "y":9 },

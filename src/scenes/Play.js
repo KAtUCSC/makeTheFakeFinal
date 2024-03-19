@@ -82,15 +82,13 @@ class Play extends Phaser.Scene {
         this.bike.update()
 
         this.bike.flagDistX = Math.abs(this.bike.x - this.flag.x)
-        this.bike.flagDistY = Math.abs(this.bike.y - this.flag.y)
-        //console.log(this.bike.flagDistX)
-
         if(this.bike.flagDistX < this.flag.width/2 && this.bike.end == false) {
             this.add.bitmapText(this.flag.x, this.flag.y, 'pixelU', 'Flag Reached!', 64).setOrigin(0.5)
             this.time.delayedCall(3000, () => {
                 this.scene.start('scoreScene')
             })
             this.bike.end = true
+            this.bike.airTime.paused = true
             console.log(game.playerStats.score)
         }
     }
@@ -100,6 +98,10 @@ class Play extends Phaser.Scene {
         this.ui.score.text = game.playerStats.score
         let text = this.add.bitmapText(this.bike.x, this.bike.y - this.bike.height, 'pixelU', value, 32).setOrigin(.5)
         this.time.delayedCall(1000, () => text.destroy())
+    }
+
+    changeHelmets() {
+        game.playerStats.helmets -= 1
     }
 
     

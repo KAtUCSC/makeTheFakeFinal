@@ -26,7 +26,7 @@ class Title extends Phaser.Scene {
         //can recieve data
         //graphics
         this.add.rectangle(0, 0, game.config.width, game.config.height, 0x444444).setOrigin(0)
-        this.add.image(game.config.width*2/3, game.config.height*3/4, 'sSheet', 'bikeWheeled').setScale(8).setAngle(-20)
+        this.add.image(game.config.width*0.7, game.config.height*3/4, 'sSheet', 'bikeWheeled').setScale(8).setAngle(-20)
 
         //text
         //title

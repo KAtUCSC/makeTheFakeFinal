@@ -116,7 +116,7 @@ class Bike extends Phaser.Physics.Matter.Sprite {
         }
         //get bike angle (given in radians)
         let angle = 0
-        if(bodyA.label === 'bike') {
+        if(bodyA.label === 'bike' || bodyA.label === 'player') {
             angle = bodyA.angle
         } else {
             angle = bodyB.angle
@@ -143,7 +143,6 @@ class Bike extends Phaser.Physics.Matter.Sprite {
         //get the sign
         let flipSign = Math.abs(this.rotation)/this.rotation
         if(Math.abs(flipAngle) > 3) {
-            //console.log(flipAngle, 'did a flip')
             this.scene.changeScore(100)
             //reset rotation by adding 2pi * the opposite sign
             //prevents doing a flip per frame from the same flip
@@ -199,13 +198,22 @@ class Bike extends Phaser.Physics.Matter.Sprite {
         this.scene.cameras.main.stopFollow()
         //crash player and handle death
         this.player.crashPlayer()
+        this.scene.changeScore(-100)
         this.handleDeath()
     }
 
     handleDeath() {
-        this.scene.time.delayedCall(5000, () => {
-            this.scene.scene.start('titleScene')
-        })
+        this.scene.changeHelmets()
+        console.log(game.playerStats)
+        if(game.playerStats.helmets > 0) {
+            this.scene.time.delayedCall(5000, () => {
+                this.scene.scene.restart()
+            })
+        } else {
+            this.scene.time.delayedCall(5000, () => {
+                this.scene.scene.start('scoreScene')
+            })
+        }
     }
 
     approachAngular(target) {
