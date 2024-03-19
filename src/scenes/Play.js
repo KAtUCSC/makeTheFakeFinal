@@ -93,7 +93,7 @@ class Play extends Phaser.Scene {
             this.bike.end = true
             this.bike.airTime.paused = true
 
-            this.changeScore((game.playerStats.helmets + game.playerStats.bones) * 150)
+            this.changeScore((game.playerStats.helmets + game.playerStats.bones) * 200)
         }
     }
 
