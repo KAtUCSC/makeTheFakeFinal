@@ -1,6 +1,7 @@
 /*
 Kira Way
 Make the Fake: Broken Bonez
+Major components: Physics system, camera, tilemaps, timers, text objects
 */
 let config = {
     type: Phaser.AUTO,
